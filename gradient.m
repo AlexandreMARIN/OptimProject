@@ -5,7 +5,6 @@ function [g, J, fx, cx] = gradient(x, h, f, c)
 %h : step
 %f : real-valued function of n variables
 %c : function which gives the m constraints
-
 %Output :
 %g : gradient of f at x
 %J : the Jacobian matrix of c at x
