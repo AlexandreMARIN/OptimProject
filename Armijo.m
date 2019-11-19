@@ -29,6 +29,10 @@ end
 c1F_d = c1*(gx0'*d - rho*norm(cx0, 1));
 
 s = 0.5;
+x = x0 + s*d;
+fx = f(x);
+cx = c(x);
+Fx = merit(fx, cx, rho);
 
 k = 0;%rank of the iteration
 while k < nbiter && Fx >= F0 + s*c1F_d
