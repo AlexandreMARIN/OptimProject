@@ -17,6 +17,6 @@ M = [A C' ; C zeros(m)];
 z = linsolve(M, [-b ; d]);
 
 x = z(1:n);
-y = z(n+1:m);
+y = z(n+1:n+m);
 
 end

@@ -27,7 +27,6 @@ end
 %the derivative of the merit function, with respect to the direction d
 %we multiply it by c1
 c1F_d = c1*(gx0'*d - rho*norm(cx0, 1));
-
 s = 0.5;
 x = x0 + s*d;
 fx = f(x);
@@ -35,7 +34,7 @@ cx = c(x);
 Fx = merit(fx, cx, rho);
 
 k = 0;%rank of the iteration
-while k < nbiter && Fx >= F0 + s*c1F_d
+while (k < nbiter) && (Fx >= F0 + s*c1F_d)
     k = k + 1;
     s = s/2;
     x = x0 + s*d;
