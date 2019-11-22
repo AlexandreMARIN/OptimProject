@@ -1,3 +1,4 @@
+clearvars
 addpath("../")
 
 x = [0;0];

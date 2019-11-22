@@ -1,5 +1,5 @@
 addpath("../")
-
+clearvars
 
 x0 = [-1 ; 2 ; 1 ; -2 ; -2];
 
@@ -9,7 +9,11 @@ f_star = 28.4974;
 
 fprintf("f(x_star) = %f\n\n", f_test1(x_star))
 fprintf("c(x_star) = %f\n\n", c_test1(x_star))
-x_inf = x_star-0.3;
-x_sup = x_star+0.3;
-
-[x,lambda,k] = SQP(x0, @f_test1, @c_test1, 0.001, 10000,x_inf,x_sup);
+x_inf = x_star - 2;
+x_sup = x_star + 2;
+tol = 1e-7;
+maxnbiter = 50;
+maxnbcall = 100;
+mindx = 1e-8;
+mindf = 1e-10;
+[x, lambda, iter, normGradLag] = SQP(x0, @f_test1, @c_test1, tol, x_inf, x_sup, maxnbiter, maxnbcall, mindx, mindf);
