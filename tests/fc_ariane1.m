@@ -1,6 +1,7 @@
-function[y] = c_ariane1(m)
-global k
+function[Mi, y] = fc_ariane1(m)
+
 global m_u
+global k
 global v
 global delta_V
 
@@ -20,5 +21,6 @@ Mi = Mf + m(1);%Mi,1
 y = y + v(1) * log(Mi/Mf);
 
 y = y - delta_V;
+
 
 end

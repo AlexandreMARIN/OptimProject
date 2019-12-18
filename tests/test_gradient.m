@@ -1,9 +1,9 @@
 clearvars
-addpath("../")
+addpath("../SQP")
 
 x = [0;0];
-h = 0.01;
-
-[g, J] = gradient(x, func(x), constraints(x), h, @func, @constraints);
+h = [0.01, 0.01];
+[fx, cx] = func_constraints(x);
+[g, J] = gradient(x, fx, cx, h, @func_constraints);
 disp(g)
 disp(J)

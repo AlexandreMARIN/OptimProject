@@ -7,6 +7,7 @@ function dydt = odefunc(t, y, alpha, M_i, v_e, theta)
 
 global R_t
 
+%some constants values
 mu = 3.986e14;
 c_x = 0.1;
 rho0 = 1.225;

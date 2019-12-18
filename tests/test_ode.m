@@ -1,9 +1,11 @@
-addpath("../")
+addpath("../simulator")
+clearvars
 global R_t
 
 R_t = 6378137;
 R0 = [R_t ; 0];
-theta0 = -pi/100;
+theta0 = pi/10;
+theta1 = pi/20;
 V0mag = 100;
 V0 = V0mag*[cos(theta0) ; sin(theta0)];
 M0 = 208691;
@@ -20,7 +22,7 @@ y0 = [R0 ; V0 ; M0];
 tspan = linspace(t0, tf, 1000);
 
 %we solve the ODE
-[t, y] = ode45(@(t, y) odefunc(t, y, alpha, M0, v_e, theta0), tspan, y0);
+[t, y] = ode45(@(t, y) odefunc(t, y, alpha, M0, v_e, theta1), tspan, y0);
 
 close all
 %we draw the Earth
