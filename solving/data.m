@@ -28,6 +28,7 @@ t_c = [0 ; 0 ; 0];
 
 %see the analytical part
 global omega
+omega = [nan ; nan ; nan];
 for j = [1 2 3]
     omega(j) = k_(j)/(1 + k_(j));
 end

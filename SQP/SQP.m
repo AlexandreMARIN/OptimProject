@@ -1,7 +1,7 @@
 function [x, lambda, k, normGradLag, fx, cx] = SQP(x0, problem, epsilon, x_inf, x_sup, maxnbiter, maxnbcall, mindx, mindf, getMsgWarn)
 %the SQP algorithm
 %Input:
-%x0 : first estimate of a minimiser
+%x0 : first estimate of a minimiser, a column vector
 %problem : a handle to a function which returns the value of the objective
 %and the values of the constraint
 %epsilon : tolerance
