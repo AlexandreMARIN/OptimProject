@@ -1,0 +1,59 @@
+\documentclass[a4paper, 11pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[colorlinks=true, urlcolor=purple, linkcolor=blue, pdftitle={Projet Optimisation}, pdfauthor={Adrien TALATIZI, Alexandre MARIN}, pdfsubject={optimisation}, pdfkeywords={master I.M.P.E., optimisation, MATLAB}]{hyperref}
+\usepackage{array}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{xspace}
+\usepackage{textcomp}
+\usepackage[table]{xcolor}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage{amsthm}
+%\usepackage[french]{algorithm2e}
+\usepackage{graphicx}
+\usepackage{listings}
+
+
+\newcounter{question}
+\renewcommand\thesection{\arabic{section}}
+\renewcommand\thequestion{Question 1.4.\arabic{q})}
+\newcommand\question{\addtocounter{q}{1}\vspace*{1cm}{\raggedright\textbf{\thequestion}}\par\vspace*{0.5cm}}
+
+
+\includeonly{intro}
+
+
+\begin{document}
+
+\lstset{%
+basicstyle=\selectfont\color{black}\ttfamily,%
+keywordstyle=\color{blue}\bfseries\ttfamily,%
+identifierstyle=, %
+commentstyle=\color{green}\slshape, %
+stringstyle=\ttfamily, %
+showstringspaces=true,%
+language=MATLAB,%
+frame=none,%
+numbers=none}
+
+
+
+\begin{titlepage}
+\author{Adrien TALATIZI\\ Alexandre MARIN}
+\date{pour le 7 janvier 2020}
+\title{Projet Optimisation\\ Optimisation d'un lanceur spatial}
+\maketitle
+\tableofcontents
+\end{titlepage}
+
+
+\include{intro}
+\include{SQP}
+\include{test_cases}
+\include{launcher_optim}
+\include{analytical_part}
+\include{results}
+
+\end{document}

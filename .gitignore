@@ -2,3 +2,10 @@
 *.asv
 *.pdf
 *.mat
+
+#LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz

@@ -9,7 +9,7 @@ data()
 V_p = 1.2*V_c;
 
 %tolerance
-tol = 15;
+tol = 10;
 
 maxnbiter = 5;%maximum number of iterations
 iter = 1;
