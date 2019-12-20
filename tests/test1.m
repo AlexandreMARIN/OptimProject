@@ -16,4 +16,4 @@ maxnbiter = 50;
 maxnbcall = 100;
 mindx = 1e-8;
 mindf = 1e-10;
-[x, lambda, iter, normGradLag] = SQP(x0, @fc_test1, tol, x_inf, x_sup, maxnbiter, maxnbcall, mindx, mindf);
+[x, lambda, iter, normGradLag, fx, cx, rho, nbcall] = SQP(x0, @fc_test1, tol, x_inf, x_sup, maxnbiter, maxnbcall, mindx, mindf);

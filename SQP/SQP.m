@@ -1,4 +1,4 @@
-function [x, lambda, k, normGradLag, fx, cx] = SQP(x0, problem, epsilon, x_inf, x_sup, maxnbiter, maxnbcall, mindx, mindf, getMsgWarn)
+function [x, lambda, k, normGradLag, fx, cx, rho, nbcall] = SQP(x0, problem, epsilon, x_inf, x_sup, maxnbiter, maxnbcall, mindx, mindf, getMsgWarn)
 %the SQP algorithm
 %Input:
 %x0 : first estimate of a minimiser, a column vector
@@ -22,6 +22,8 @@ function [x, lambda, k, normGradLag, fx, cx] = SQP(x0, problem, epsilon, x_inf, 
 %normGradLag : Euclidian norm of the gradient of the Lagrangian function
 % at x
 %fx, cx : the value of the objective and of the constraints at x
+%rho : see Armijo()
+%nbcall : number of calls for f and c
 
 if nargin < 10
     getMsgWarn = [false, false];
@@ -59,7 +61,7 @@ d_QP(ind_sup) = x_sup(ind_sup) - x(ind_sup);
 
 %globalisation
 fprev = fx;%value of f at prev_x
-[x, fx, cx, nbcall, dx] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, nbit_Armijo, nbcall, getMsgWarn(2));
+[x, fx, cx, nbcall, dx, rho] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, nbit_Armijo, nbcall, getMsgWarn(2));
 
 
 while (k < maxnbiter)
@@ -121,7 +123,7 @@ while (k < maxnbiter)
     
     %globalisation
     fprev = fx;
-    [x, fx, cx, nbcall, dx] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, nbit_Armijo, nbcall, getMsgWarn(2));
+    [x, fx, cx, nbcall, dx, rho] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, nbit_Armijo, nbcall, getMsgWarn(2));
 
 end
 

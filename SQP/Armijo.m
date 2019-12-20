@@ -1,4 +1,4 @@
-function [x, fx, cx, nbcall, dx] = Armijo(d, x, x0, fx0, gx0, cx0, c1, problem, rho0, nbiter, nbcall, getWarn)
+function [x, fx, cx, nbcall, dx, rho] = Armijo(d, x, x0, fx0, gx0, cx0, c1, problem, rho0, nbiter, nbcall, getWarn)
 %Input:
 %d : d = x - x0, direction of descent
 %x : the approximation of the minimiser given by the Newton's algorithm
@@ -17,6 +17,7 @@ function [x, fx, cx, nbcall, dx] = Armijo(d, x, x0, fx0, gx0, cx0, c1, problem, 
 %fx, cx : f(x), c(x)
 %nbcall : number of calls for f, c
 %dx : = x - x0
+%rho : value used for the merit function
 
 %we compute the derivative of the merit function, with respect to the direction d
 %we multiply it by c1
