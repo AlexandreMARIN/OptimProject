@@ -1,34 +1,48 @@
 \documentclass[a4paper, 11pt]{report}
 \usepackage[utf8]{inputenc}
-\usepackage[colorlinks=true, urlcolor=purple, linkcolor=blue, pdftitle={Projet Optimisation}, pdfauthor={Adrien TALATIZI, Alexandre MARIN}, pdfsubject={optimisation}, pdfkeywords={master I.M.P.E., optimisation, MATLAB}]{hyperref}
-\usepackage{array}
 \usepackage[T1]{fontenc}
+\usepackage[colorlinks=true, urlcolor=purple, linkcolor=blue, pdftitle={Projet Optimisation}, pdfauthor={Adrien TALATIZI, Alexandre MARIN}, pdfsubject={optimisation}, pdfkeywords={master I.M.P.E., optimisation, MATLAB}]{hyperref}
 \usepackage[french]{babel}
 \usepackage{xspace}
 \usepackage{textcomp}
 \usepackage[table]{xcolor}
 
+\usepackage{array}
 \usepackage{amsmath}
 \usepackage{amssymb}
 %\usepackage{amsthm}
 %\usepackage[french]{algorithm2e}
 \usepackage{graphicx}
 \usepackage{listings}
-
+\usepackage{mathrsfs}
 
 \newcounter{question}
 \renewcommand\thesection{\arabic{section}}
-\renewcommand\thequestion{Question 1.4.\arabic{q})}
-\newcommand\question{\addtocounter{q}{1}\vspace*{1cm}{\raggedright\textbf{\thequestion}}\par\vspace*{0.5cm}}
+\renewcommand\thequestion{Question 1.4.\arabic{question}}
+\newcommand\question{\addtocounter{question}{1}\vspace*{1cm}{\raggedright\textbf{\thequestion}}\par\vspace*{0.5cm}}
 
 
-\includeonly{intro}
+%important quantities
+\newcommand\propellantsvlct[1]{\mathrm{v}_{\mathrm{e}\,#1}}%velocity of the propellants
+\newcommand\masspropel[1]{\mathrm{m}_{\mathrm{e}\,#1}}%propelling velocity
+\newcommand\massstruct[1]{\mathrm{m}_{\mathrm{s}\,#1}}%mass of the structure
+\newcommand\constructidx[1]{\mathrm{k}_{#1}}%constructive index
+\newcommand\initmass[1]{\mathrm{M}_{\mathrm{i}\,#1}}%initial mass
+\newcommand\finalmass[1]{\mathrm{M}_{\mathrm{f}\,#1}}%final mass
+\newcommand\propellingvlct{\mathrm{V}_{\mathrm{p}}}%propelling velocity
+\newcommand\realvlct{\mathrm{V}_{\mathrm{r}}}%real velocity
+\newcommand\targetvlct{\mathrm{V}_{\mathrm{c}}}%target velocity
+\newcommand\payload{\mathrm{m}_{\mathrm{u}}}%payload
+\newcommand\targetalt{\mathrm{H}_{\mathrm{c}}}%target altitude
+
+
+\includeonly{intro, analytical_part}
 
 
 \begin{document}
 
 \lstset{%
-basicstyle=\selectfont\color{black}\ttfamily,%
+basicstyle=\color{black}\ttfamily,%
 keywordstyle=\color{blue}\bfseries\ttfamily,%
 identifierstyle=, %
 commentstyle=\color{green}\slshape, %

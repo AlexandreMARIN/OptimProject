@@ -1,0 +1,43 @@
+\section{Résolution analytique du problème d'étagement}
+
+On reprend les notations de l'énoncé, indications comprises.
+
+\question Notons que pour $j\in\{1,2,3\}$,
+\begin{align*}
+\dfrac{\initmass{j+1}}{\initmass{j}} &= \dfrac{\finalmass{j}-\massstruct{j}}{\initmass{j}} =%
+\dfrac{\finalmass{j}-\constructidx{j}\masspropel{j}}{\initmass{j}} \\ &= \dfrac{\finalmass{j}-\constructidx{j}(\initmass{j}-\finalmass{j})}{\initmass{j}} = \dfrac{1+\constructidx{j}}{x_{j}}-\constructidx{j}\text{.}
+\end{align*}
+
+Notons $\varphi$ l'application qui envoie $(\masspropel{1},\masspropel{2},\masspropel{3})$ sur $x$ par la formule
+\[x_{j} = 1 + \dfrac{\masspropel{j}}{\payload + \sum_{j<l\leqslant 3}(1+\constructidx{l})\masspropel{l} \,+ \constructidx{j}\masspropel{j}}\text{.}\]
+Alors $\varphi$ est bijective car pour tout $j\in\{1,2,3\}$
+\[\masspropel{j}=\dfrac{\payload + \sum_{j<l\leqslant 3}(1+\constructidx{l})\masspropel{l}}{1+\constructidx{j}(1-x_{j})}\]
+et donc $J=-f\circ \varphi$. La reformulation de la contrainte étant immédiate, les deux problèmes considérés sont équivalents.
+
+\question Si $x$ est un minimiseur local de $f$ sous la contrainte $c$, comme ces deux fonctions sont de classe $\mathscr{C}^1$ et que la contrainte en $x$ est forcément qualifiée, il existe $\lambda\in\mathbb{R}$ tel que, pour tout $j\in\{1,2,3\}$
+\[\dfrac{\partial f}{\partial x_{j}}(x) + \lambda\dfrac{\partial c}{\partial x_{j}}(x) = 0\]
+avec
+\[\dfrac{\partial f}{\partial x_{j}}(x) = y_{j+1}\,y_{j+2}\left(\dfrac{1+\constructidx{j}}{x_{j}^{2}}\right)%
+,\; \dfrac{\partial c}{\partial x_{j}}(x) = \dfrac{\propellantsvlct{j}}{x_{j}}\]
+en considérant des indices \emph{modulo} $3$.
+
+En multipliant l'équation ci-desssus par $x_j$ et en remarquant que
+\[f(x)=-y_{1}\,y_{2}\,y_{3},\; 1+\dfrac{\constructidx{j}}{y_{j}}=(1-\Omega_{j}x_{j})^{-1}\]
+on obtient
+\[\propellantsvlct{j}(1-\Omega_{j}x_{j}) = \dfrac{f(x)}{\lambda}\text{.}\]
+
+\question Dans l'équation qui précède, le membre de droite ne dépend pas de $j$, donc
+\[x_{j} = \dfrac{1}{\Omega_{j}}\left[1-\dfrac{\propellantsvlct{3}}{\propellantsvlct{j}}(1-\Omega_{3}x_{3})\right]\]
+et on voit que le problème revient à résoudre $c(x)=0$ où $x_1$ et $x_2$ s'expriment en fonction de $x_3$.
+
+\question On considère une vitesse propulsive $\propellingvlct = 1.2\,\targetvlct$. Dans le fichier \verb+analytical_approach.m+ du dossier \verb+solving+, nous résolvons cette équation en $x_3$ avec la méthode de Newton. On obtient
+
+\begin{center}
+$\begin{array}{|c|c|c|c|c|c|}\hline
+x_3 & \masspropel{1} & \masspropel{2} & \masspropel{3} & \mathrm{M}_{0} & \lambda\\\hline
+3,118\,9 & 26\ 981\text{ kg}& 12\ 704\text{ kg} & 5\ 516\text{ kg} & 52\ 408\text{ kg} & -1,354\,7\cdot 10^{-5}\\\hline
+\end{array}$
+\end{center}
+
+La troisième équation donnée par le théorème de K.K.T. nous conduit au nombre $-3,47\cdot 10^{-18}$.
+
