@@ -30,14 +30,18 @@ on obtient
 \[x_{j} = \dfrac{1}{\Omega_{j}}\left[1-\dfrac{\propellantsvlct{3}}{\propellantsvlct{j}}(1-\Omega_{3}x_{3})\right]\]
 et on voit que le problème revient à résoudre $c(x)=0$ où $x_1$ et $x_2$ s'expriment en fonction de $x_3$.
 
-\question On considère une vitesse propulsive $\propellingvlct = 1.2\,\targetvlct$. Dans le fichier \verb+analytical_approach.m+ du dossier \verb+solving+, nous résolvons cette équation en $x_3$ avec la méthode de Newton. On obtient
+\question On considère une vitesse propulsive $\propellingvlct = 1.2\,\targetvlct$. Dans le fichier \\\verb+analytical_approach.m+ du dossier \verb+solving+, nous résolvons cette équation en $x_3$ avec la méthode de Newton. On obtient
 
 \begin{center}
-$\begin{array}{|c|c|c|c|c|c|}\hline
+\[\begin{array}{|c|c|c|c|c|c|}\hline
 x_3 & \masspropel{1} & \masspropel{2} & \masspropel{3} & \mathrm{M}_{0} & \lambda\\\hline
 3,118\,9 & 26\ 981\text{ kg}& 12\ 704\text{ kg} & 5\ 516\text{ kg} & 52\ 408\text{ kg} & -1,354\,7\cdot 10^{-5}\\\hline
-\end{array}$
+\end{array}\]
 \end{center}
 
 La troisième équation donnée par le théorème de K.K.T. nous conduit au nombre $-3,47\cdot 10^{-18}$.
 
+\question Dans le fichier \lstinline+solve_stageproblem.m+ nous résolvons le problème (PE) en minimisant $\mathrm{M}_0$ et en prenant comme point de départ $m_{0}=(27\,000,\,13\,000,\,6\,000)$. Nous obtenons en $18$ itérations
+\[\masspropel{} = (26\,983,\,12\,703,\,5\,516)\]
+
+On retrouve bien le minimiseur déterminé avec l'approche analytique.
