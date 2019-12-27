@@ -1,5 +1,6 @@
 function[Mi, y] = fc_ariane1(m)
-
+%for the test case 2
+%m must be a 3D real vector
 global m_u
 global k
 global v

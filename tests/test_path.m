@@ -1,3 +1,4 @@
+%we compute the path of the rocket
 addpath("../simulator")
 clearvars
 
@@ -11,6 +12,7 @@ m_u = 1700;
 m_e = [145349 ; 31215 ; 7933];
 alpha = [15 ; 10 ; 10];
 
+%we compute M_i and t_c
 M_i = [0 ; 0 ; 0 ; m_u];
 t_c = [0 ; 0 ; 0];
 for j=[3 2 1]
@@ -59,10 +61,10 @@ figure(3)
 plot(tspanout, Vmag)
 xlabel("time $t$", 'Interpreter', 'latex')
 ylabel("$\Vert V\Vert$", 'Interpreter', 'latex')
-title("evolution of the velocity with respect to the time")
+title("velocity with respect to the time")
 
 figure(4)
 plot(tspanout, M)
 xlabel("time $t$", 'Interpreter', 'latex')
 ylabel("mass $M$", 'Interpreter', 'latex')
-title("evolution of the mass with respect to the time")
+title("mass with respect to the time")

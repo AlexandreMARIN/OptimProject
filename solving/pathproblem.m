@@ -4,10 +4,12 @@ function [fx, cx] = pathproblem(theta)
 %Remark : we normalize to avoid numeric troubles
 global R_c V_p
 
-[R, V, ~, ~] = rocketpath(theta);
+[R, V] = rocketpath(theta);
 
+%objective
 fx = -norm(V(end,:))/V_p;
 
+%constraints
 cx = [norm(R(end,:))/R_c - 1 ; (V(end,:)/V_p) * (R(end,:)'/R_c)];
 
 end

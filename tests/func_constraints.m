@@ -1,4 +1,6 @@
 function [fx, cx] = func_constraints(x)
+%use this function with the file 'test_gradient.m'
+%x must be a 2D real vector
 
 fx = cos(x(1)) + exp(x(2));
 

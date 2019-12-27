@@ -1,5 +1,7 @@
 function[Mi, y] = stageproblem(m)
-%it gives the objective and the constaints for the stage problem
+%it gives the objective (Mi) and the constaint (y) for the stage problem
+%given the masses of the propellants
+%m must be a 3D real vector
 
 global m_u k_ v_e V_p
 

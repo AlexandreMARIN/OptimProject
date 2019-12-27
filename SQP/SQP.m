@@ -29,6 +29,7 @@ function [x, lambda, k, normGradLag, fx, cx, rho, nbcall] = SQP(x0, problem, eps
 %rho : see Armijo()
 %nbcall : number of calls for f and c
 
+%Will we display information ?
 if nargin < 10
     getMsgWarn = [false, false];
 end
@@ -44,9 +45,9 @@ nbit_Armijo = 10;%number of iterations for Armijo
 k = 0;%rank of the current iteration
 nbcall = 1;%number of calls for f, c
 
-%compute A, Q, g, b
-H = eye(n);
-if iscell(problem)%we see what kind of data is problem
+%we compute A, Q, g, b to build the linear system
+H = eye(n);%an estimate of the Hessian matrix Q of the Lagrangian function
+if iscell(problem)%we see what kind of data is 'problem'
     [fx, cx] = problem{1}(x);
     cx = cx(problem{2});%we take only the constraints given by problem{2}
 else
@@ -71,7 +72,7 @@ d_QP(ind_sup) = x_sup(ind_sup) - x(ind_sup);
 
 %globalisation
 fprev = fx;%value of f at prev_x
-[x, fx, cx, nbcall, dx, rho] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, nbit_Armijo, nbcall, getMsgWarn(2));
+[x, fx, cx, nbcall, dx, rho] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, nbit_Armijo, nbcall, maxnbcall, getMsgWarn(2));
 
 
 while (k < maxnbiter)
@@ -83,7 +84,7 @@ while (k < maxnbiter)
     [g, A] = gradient(x, fx, cx, h, problem);
     
     if isempty(lambda)
-        gxlag = g;
+        gxlag = g;%no constraint
     else
         gxlag = g + A'*lambda;%gradient of the Lagrangian function with respect to x
     end
@@ -117,6 +118,8 @@ while (k < maxnbiter)
     end
     
     %another three stop criteria
+    
+    %Is the maximum number of calls for 'problem' reached ?
     if nbcall > maxnbcall
         if getMsgWarn(1)
             fprintf("The maximum number of calls for the objective has been reached : \n\tSQP stops\n")
@@ -124,6 +127,7 @@ while (k < maxnbiter)
         return
     end
     
+    %Is the update of x negligible ?
     ndx = norm(dx);
     if (ndx >= 0) && (ndx < mindx)
         if getMsgWarn(1)
@@ -132,6 +136,7 @@ while (k < maxnbiter)
         return
     end
 
+    %Is the decrease of f(x) negligible ?
     df = fprev - fx;
     if (df >= 0) && (df <= mindf)
         if getMsgWarn(1)
@@ -159,10 +164,11 @@ while (k < maxnbiter)
     
     %globalisation
     fprev = fx;
-    [x, fx, cx, nbcall, dx, rho] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, nbit_Armijo, nbcall, getMsgWarn(2));
+    [x, fx, cx, nbcall, dx, rho] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, nbit_Armijo, nbcall, maxnbcall, getMsgWarn(2));
 
 end
 
+%necessarily, if we are here the maximum number of iterations is reached
 if getMsgWarn(1)
     fprintf("The maximum number of iterations has been reached :\n\tSQP stops\n")
 end

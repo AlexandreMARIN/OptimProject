@@ -1,12 +1,13 @@
 function [] = stage_solver()
 %it solves the stage problem
-%Don't forget to correctly initialize V_p !
-global m_e V_p V_c
+%Don't forget to initialize V_p correctly!
+global m_e
 
+%parameters for the function SQP()
 mindm = 1;
 mindf = 0.1;
-maxnbcall = 50;
-maxnbiter = 5;
+maxnbcall = 80;
+maxnbiter = 10;
 tol = 0.01;
 
 startnb = 50;%number of starting points we test
@@ -14,8 +15,9 @@ startnb = 50;%number of starting points we test
 %intervals giving possible values of the components of m_e
 %these intervals are described with their minimums (in the first column)
 %and their lengths (in the second column)
-interv_m = [25000, 3000 ...
-           ;12000, 2000 ...
+%it is a neighbourhood of the solution of the problem with V_p=1.2*V_c
+interv_m = [24000, 5000 ...
+           ;10000, 4000 ...
            ;5000, 1000];
 
 min_ngl = Inf;%minimum norm of the gradient of the Lagrangian function

@@ -45,7 +45,7 @@ for j = [3 2 1]
     m_e(j) = (M_i(j) - M_i(j+1))/(1+k_(j));
 end
 
-%the asked multiplier of Lagrange
+%this is the asked multiplier of Lagrange
 lambda = -m_u/(M_i(1)*v_e(3)*(1 - omega(3)*x(3)));
 
 %here we check that the formula given by the KKT theorem

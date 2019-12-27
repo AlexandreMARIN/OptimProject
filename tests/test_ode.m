@@ -1,8 +1,11 @@
+%we test the numerical integration
 addpath("../simulator")
 clearvars
 global R_t
 
 R_t = 6378137;
+
+%value at 0 of the solution of the ODE
 R0 = [R_t ; 0];
 theta0 = pi/10;
 theta1 = pi/20;
@@ -10,6 +13,7 @@ V0mag = 100;
 V0 = V0mag*[cos(theta0) ; sin(theta0)];
 M0 = 208691;
 
+%data from the problem
 alpha = 15;
 v_e = 2600;
 m_e = 145349;

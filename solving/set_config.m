@@ -1,6 +1,7 @@
+%here we search for an optimum configuration of the rocket
 clearvars
 addpath("../simulator", "../SQP")
-global R_t R_c V_p V_c M_i m_u t_c m_e v_e k_ alpha
+global R_t H_c R_c V_p V_c M_i t_c m_e v_e k_ alpha
 
 %we prepare some values
 data()
@@ -25,7 +26,8 @@ end
 V_r = norm(V(end,:));
 deltaV = V_c - V_r;
 
-fprintf("iter : 0\ndeltaV : %f\nm_e : %s\ntheta : %s\n\n", deltaV, join(string(m_e)), join(string(theta)))
+fprintf("iter : 0\ndeltaV : %f\nm_e : %s\ntheta : %s\n\n",...
+        deltaV, join(string(m_e)), join(string(theta)))
 
 
 while (iter <= maxnbiter) && (abs(deltaV) > tol)
@@ -38,13 +40,18 @@ while (iter <= maxnbiter) && (abs(deltaV) > tol)
     [theta, R, V, M, tspanout] = path_solver();
     V_r = norm(V(end,:));
     deltaV = V_c - V_r;
-    fprintf("iter : %d\ndeltaV : %f\nm_e : %s\ntheta : %s\n\n", iter, deltaV, join(string(m_e)), join(string(theta)))
+    fprintf("iter : %d\ndeltaV : %f\nm_e : %s\ntheta : %s\n\n",...
+            iter, deltaV, join(string(m_e)), join(string(theta)))
 
     iter = iter + 1;
 end
 
 
-%specific times
+%%%%%%%%%%%%%%%%%%%%%%%%
+%we present some results
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+%specific times : the combustion of the stage j ends at t_(j)
 t_ = cumsum(t_c);
 
 close all
@@ -61,13 +68,13 @@ axis equal
 
 %we draw the path and the final velocity
 plot(R(:,1), R(:,2))
-quiver(R(end,1), R(end,2), V(end,1), V(end,2), 100, "+r-", "ShowArrowHead", "on", "MarkerSize", 10)
-title("The path for $\theta = $["+join(string(theta))+"]", 'Interpreter', 'latex')
+quiver(R(end,1), R(end,2), V(end,1), V(end,2), 50, "+r-", "ShowArrowHead", "on", "MarkerSize", 10, 'MaxHeadSize', 1)
+title({"The path for", "$\theta = $[ "+join(string(theta), ", ")+" ]"}, 'Interpreter', 'latex')
 xlabel("$x$", 'Interpreter', 'latex')
 ylabel("$y$", 'Interpreter', 'latex')
-legend("Earth", "orbit", "rocket's path", "final velocity")
+legend("Earth", "orbit", "path of the rocket", "final velocity", 'FontSize', 12)
 
-%we compute norms of velocity and position
+%we compute norms of the velocity and of the position
 nbpt = size(tspanout, 1);
 Vmag = zeros(nbpt, 1);
 Rmag = zeros(nbpt, 1);
@@ -76,32 +83,45 @@ for n = 1:nbpt
     Rmag(n) = norm(R(n, :));
 end
 
+%we plot the altitude
 figure(2)
-plot(tspanout, Rmag, [0, t_(3)], [R_c, R_c])
-xlabel("time $t$", 'Interpreter', 'latex')
-ylabel("distance from the origin")
-title({"the distance from the center of the Earth", "with respect to the time"})
+plot(tspanout, Rmag - R_t, [0, t_(3)], [H_c, H_c])
+xlabel("time")
+ylabel("altitude")
+title({"the altitude of the rocket (in meters)", "with respect to the time"})
 xticks(t_)
 xticklabels(["t_1", "t_2", "t_3"])
-legend("$\Vert R\Vert$", "$R_c$", 'Interpreter', 'latex', 'Location', 'southeast')
+legend("$\Vert R\Vert\ -\ R_{t}$", "$H_c$", 'Interpreter', 'latex', 'Location', 'southeast', 'FontSize', 15)
 
+%we display the velocity
 figure(3)
 plot(tspanout, Vmag, [0, t_(3)], [V_c, V_c], 'r--')
-xlabel("time $t$", 'Interpreter', 'latex')
+xlabel("time")
 ylabel("velocity")
-title("evolution of the velocity with respect to the time")
+title({"the velocity of the rocket (in m/s)", "with respect to the time"})
 xticks(t_)
 xticklabels(["t_1", "t_2", "t_3"])
-legend("$\Vert V\Vert$", "$V_c$", 'Interpreter', 'latex', 'Location', 'southeast')
+legend("$\Vert V\Vert$", "$V_c$", 'Interpreter', 'latex', 'Location', 'southeast', 'FontSize', 15)
 
+%we display the mass
 figure(4)
-plot(tspanout, M)
-xlabel("time $t$", 'Interpreter', 'latex')
-ylabel("mass $M$", 'Interpreter', 'latex')
-title("evolution of the mass with respect to the time")
+M_f = M_i(1:3) - m_e;%final masses
+plot(tspanout, M, "-k")
+hold on
+for j = [2 3]
+    plot([t_(j)-t_c(j), t_(j)], [M_i(j), M_i(j)], '--m')
+end
+for j = [1 2]
+    plot([t_(j)-t_c(j), t_(j)], [M_f(j), M_f(j)], '--b')
+end
+xlabel("time")
+ylabel("mass")
+title("the mass of the rocket with respect to the time")
 xticks(t_)
 xticklabels(["t_1", "t_2", "t_3"])
-yticks(M_i([4 3 2 1]))
-yticklabels(["m_u", "M_{i3}", "M_{i2}", "M_{i1}"])
+yticks(sort([M_i(1:3) ; M_f]))
+yticklabels(["M_{f3}", "M_{i3}", "M_{f2}", "M_{i2}", "M_{f1}", "M_{i1}"])
+ylim([M_f(3), M_i(1)])
 
-fprintf("\nResults:\n\nV_p : %f\nfinal velocity : %f\ntheta : %s\nm_e : %s\n", V_p, Vmag(end), join(string(theta)), join(string(m_e)))
+%we display some information
+fprintf("\nResults acquired in %d iterations:\n\nm_e : %s\nV_p : %f\nfinal velocity : %f\ntotal mass of the rocket : %f\ntheta : %s\n", iter, join(string(m_e)), V_p, Vmag(end), M_i(1), join(string(theta)))
