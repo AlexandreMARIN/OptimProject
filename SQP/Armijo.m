@@ -5,8 +5,7 @@ function [x, fx, cx, nbcall, dx, rho] = Armijo(d, x, x0, fx0, gx0, cx0, c1, prob
 %x0 : the former approximation of the minimiser
 %fx0, gx0, cx0 : resp. values of f, gradient of f and c at x0
 %c1 : for the Armijo's algorithm
-%problem : a function which returns [f(x), c(x)] where
-%  f, c are the objective function and the constraints
+%problem : it must be the same thing as in the SQP function
 %rho0 : for the merit function, initial value of rho
 %nbiter : number of iterations
 %nbcall : number of calls for f, c
@@ -22,19 +21,20 @@ function [x, fx, cx, nbcall, dx, rho] = Armijo(d, x, x0, fx0, gx0, cx0, c1, prob
 %we compute the derivative of the merit function, with respect to the direction d
 %we multiply it by c1
 rho = rho0;
-normcx0 = norm(cx0, 1);
+normcx0 = norm(cx0, 1)+1;
 gx0d = gx0'*d;
 c1F_d = gx0d - rho*normcx0;
 %we must have a direction of descent
 %so we increase the value of rho
-while c1F_d >= 0
+while (c1F_d >= 0)
     rho = rho * 10;
     c1F_d = gx0d - rho*normcx0;
 end
 c1F_d = c1F_d * c1;
 
 %Do we accept the QP solution ?
-[fx, cx] = problem(x);
+[fx, cx] = problem{1}(x);
+cx = cx(problem{2});
 fx_newton = fx;
 cx_newton = cx;
 x_newton = x;
@@ -50,7 +50,8 @@ end
 s = 0.5;
 dx = s*d;
 x = x0 + dx;
-[fx, cx] = problem(x);
+[fx, cx] = problem{1}(x);
+cx = cx(problem{2});
 Fx = merit(fx, cx, rho);
 
 k = 0;%rank of the iteration
@@ -60,7 +61,8 @@ while (k < nbiter) && (expr >= 0)
     s = s/2;
     dx = s*d;
     x = x0 + dx;
-    [fx, cx] = problem(x);
+    [fx, cx] = problem{1}(x);
+    cx = cx(problem{2});
     Fx = merit(fx, cx, rho);
     expr = Fx - F0 - s*c1F_d;
 end

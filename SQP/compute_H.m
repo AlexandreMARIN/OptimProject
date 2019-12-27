@@ -12,7 +12,11 @@ function [H2] = compute_H(H1, d, gxlag, prev_g, prev_A, lambda)
 %(at x1)
 %lambda : the current multipliers of Lagrange
 
-y = gxlag - (prev_g + prev_A'*lambda);
+if not(isempty(lambda))
+    y = gxlag - (prev_g + prev_A'*lambda);
+else
+    y = gxlag - prev_g;
+end
 
 H2 = BFGS(H1, y, d);
 

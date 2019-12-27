@@ -1,9 +1,13 @@
 function [x, lambda, k, normGradLag, fx, cx, rho, nbcall] = SQP(x0, problem, epsilon, x_inf, x_sup, maxnbiter, maxnbcall, mindx, mindf, getMsgWarn)
-%the SQP algorithm
+%the SQP algorithm searches for a minimiser x
 %Input:
 %x0 : first estimate of a minimiser, a column vector
-%problem : a handle to a function which returns the value of the objective
-%and the values of the constraint
+%problem : it is
+%   - either a handle to a function 'f' which returns the value of the 
+%     objective and the values of the constraint 'c'
+%   - or a 2D array cell of the form
+%     {handle to a function as above ; indices of the selected constraints}
+%  no index in the second cell means "no constraint".
 %epsilon : tolerance
 %x_inf : lower bounds for each coordinate of x (see below what is x)
 %x_sup : upper bounds for each coordinate of x
@@ -42,7 +46,13 @@ nbcall = 1;%number of calls for f, c
 
 %compute A, Q, g, b
 H = eye(n);
-[fx, cx] = problem(x);
+if iscell(problem)%we see what kind of data is problem
+    [fx, cx] = problem{1}(x);
+    cx = cx(problem{2});%we take only the constraints given by problem{2}
+else
+    [fx, cx] = problem(x);
+    problem = {problem ; 1:size(cx, 1)};%we take all the constraints
+end
 [g, A] = gradient(x, fx, cx, h, problem);
 b = -cx;
 nbcall = nbcall + n;
@@ -71,11 +81,37 @@ while (k < maxnbiter)
     prev_g = g;%previous value of the gradient of the objective
     prev_A = A;%previous value of A
     [g, A] = gradient(x, fx, cx, h, problem);
-    gxlag = g + A'*lambda;%gradient of the Lagrangian with respect to x
+    
+    if isempty(lambda)
+        gxlag = g;
+    else
+        gxlag = g + A'*lambda;%gradient of the Lagrangian function with respect to x
+    end
     nbcall = nbcall + n;
     
     %main stop criterion
     normGradLag = norm([gxlag ; cx]);
+    
+    if getMsgWarn(1)
+        %we display some information
+        fprintf("iteration: %d\n"...
+               +"number of calls: %d\n"...
+               +"norm of the gradient of the Lagrangian function: %f\n"...
+               +"x: ( %s )\n"...
+               +"objective at x: %f\n"...
+               +"constraints at x: ( %s )\n"...
+               +"lambda: ( %s )\n"...
+               +"penalisation: %f\n\n"...
+               , k...
+               , nbcall...
+               , normGradLag...
+               , join(string(x), ", ")...
+               , fx...
+               , join(string(cx), ", ")...
+               , join(string(lambda), ", ")...
+               , rho);
+    end
+    
     if normGradLag < epsilon
         return
     end
@@ -89,7 +125,7 @@ while (k < maxnbiter)
     end
     
     ndx = norm(dx);
-    if (ndx > 0) && (ndx < mindx)
+    if (ndx >= 0) && (ndx < mindx)
         if getMsgWarn(1)
             fprintf("The minimum move for the minimiser has been reached :\n\tSQP stops\n")
         end
@@ -97,7 +133,7 @@ while (k < maxnbiter)
     end
 
     df = fprev - fx;
-    if (df > 0) && (df <= mindf)
+    if (df >= 0) && (df <= mindf)
         if getMsgWarn(1)
             fprintf("The value of the objective function has not enough decreased :\n\tSQP stops\n")
         end
@@ -125,6 +161,10 @@ while (k < maxnbiter)
     fprev = fx;
     [x, fx, cx, nbcall, dx, rho] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, nbit_Armijo, nbcall, getMsgWarn(2));
 
+end
+
+if getMsgWarn(1)
+    fprintf("The maximum number of iterations has been reached :\n\tSQP stops\n")
 end
 
 end

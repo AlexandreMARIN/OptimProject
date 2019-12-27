@@ -24,6 +24,10 @@ else
 end
 
 x = z(1:n);
-y = z(n+1:n+m);
+if m == 0
+    y = [];
+else
+    y = z(n+1:n+m);
+end
 
 end
