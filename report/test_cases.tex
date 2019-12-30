@@ -1,0 +1,73 @@
+%Adrien's part
+\section{Présentation des résultats sur les deux cas tests}
+
+\begin{center} \emph{\textbf{PREMIER CAS TEST} : polynôme}\\\end{center}
+
+\renewcommand{\labelitemi}{\textbullet}
+\begin{itemize}
+\item On définit la fonction test \textit{f} t.q.\\
+$f(x_1,x_2,x_3,x_4,x_5) = (x_1-1)^2+(x_1-x_2)^2 + (x_2 - x_3)^3 + (x_3 - x_4)^4 + (x_4 - x_5)^4$\\
+\item Et la contrainte \textit{c} t.q.\\
+$c(x_1,x_2,x_3,x_4,x_5) =
+(x_1 + x_2)^2 + x_3^2 - 3\sqrt{2} - 2 , 
+x_2 - x_3^2 + x_4 - 2\sqrt{2} + 2 , 
+x_{1}x_{5} - 2)^{T}$;\bigbreak
+\end{itemize}
+
+\begin{itemize}
+\item On prend comme point de départ de l'algorithme SQP : $x^0 = (-1 ; 2 ; 1 ; -2 ; -2)^{T}$\\
+\indent avec pour objectifs : $x^{*} = (-1.2366 ; 2.4616 ; 1.1911 ; -0.2144 ; -1.6165)^{T}$ et $f(x^{*}) = 28.4974$\\
+\end{itemize}
+Les résultats sont stockés dans le tableau suivant : \smallbreak
+{\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+	\hline
+ 	iter & x & f & $\| $c(x)$ \|$ & $\|    \nabla $L$  \|$ & rho & appels de f et c\\
+	\hline
+ 	8 & $(-1.2370, 2.4620, 1.1908, -0.2156, -1.6168)^{T}$ & 28.5087 & 3.8888e-13 & 1.6782e-08 & 9.8970 & 61\\
+	\hline
+\end{tabular}
+}
+\bigbreak
+\textit{Note : les résultats obtenus sont bien conformes aux résultats attendus. On remarquera que sans les bornes, SQP converge vers d'autres minima locaux. Il est donc important de choisir ces bornes proches de la solution attendue. On choisit donc un intervalle de 0.6
+autour de celle-ci.}
+\medbreak
+
+
+
+
+
+\begin{center}\emph{\textbf{SECOND CAS TEST} : masses d'ergols de la fusée Ariane 1}\\\end{center}
+
+
+
+
+
+\begin{itemize}
+\item On définit la fonction test \textit{f} t.q.\\
+$f(x_1,x_2,x_3) = 1700+1.1101x_1 + 1.1532x_2 + 1.2154x_3$\\
+\item Et la contrainte \textit{c} t.q.\\
+$c(x_1,x_2,x_3) =$\\
+\smallbreak
+$4344.3ln(\frac{1700+1.2154x_3}{1700+0.2154x_3}) 
++ 2922.4ln(\frac{1700+1.2154x_3+1.1532x_2}{1700+0.2154x_3+0.1532x_2}) 
++ 2647.2ln(\frac{1700+1.2154x_3+1.1532x_2+1.1101x_1}{1700+0.2154x_3+0.1532x_2+0.1101x_1}) 
+-11527$
+
+\bigbreak
+
+\item On prend comme point de départ de l'algorithme SQP : $x^0 = ( 275000,30000,5500)^{T}$ qui est la moyenne des bornes\\
+\indent avec pour objectifs : $x^{*} = (145349 ; 31215 ; 7933)^{T}$ et $f(x^{*}) = 208691$\\
+\end{itemize}
+Les résultats sont stockés dans le tableau suivant : \smallbreak
+{\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+	\hline
+ 	iter & x & f & $\| $c(x)$ \|$ & $\|    \nabla $L$  \|$ & rho & appels de f et c\\
+	\hline
+ 	18 & $(1.4539e5, 0.3125e5, 0.0793e5)^{T}$ & 208778 & -0.000682 & 0.0038 & 118.1651 & 82\\
+	\hline
+\end{tabular}
+}
+\bigbreak
+\textit{Note : les résultats obtenus sont bien conformes au résultats attendus. On remarquera que sans les bornes, SQP converge vers d'autres minima locaux. Il est donc important de choisir ces bornes proches de la solution attendue. On choisit donc de poser la borne supérieure comme étant $(500000 , 50000 , 10000)^{T}$ et la borne inférieure comme $(50000 , 10000 , 1000)^{T}$. Cela nous évite de plus de converger vers des solutions non physiques.}

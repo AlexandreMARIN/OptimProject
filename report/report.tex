@@ -15,6 +15,7 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{mathrsfs}
+\usepackage[hmargin=2.0cm, bottom=2cm]{geometry}
 
 \newcounter{question}
 \renewcommand\thesection{\arabic{section}}
@@ -36,7 +37,7 @@
 \newcommand\targetalt{\mathrm{H}_{\mathrm{c}}}%target altitude
 \newcommand\durcombustion[1]{t_{\mathrm{c}\,#1}}%duration of combustion
 
-\includeonly{intro, analytical_part, results}
+\includeonly{intro, descSQP, test_cases, global, analytical_part, results}
 
 
 \begin{document}
@@ -59,14 +60,15 @@ numbers=none}
 \date{pour le 7 janvier 2020}
 \title{Projet Optimisation\\ Optimisation d'un lanceur spatial}
 \maketitle
-\tableofcontents
 \end{titlepage}
+
+\tableofcontents
 
 
 \include{intro}
-\include{SQP}
+\include{descSQP}
 \include{test_cases}
-\include{launcher_optim}
+\include{global}
 \include{analytical_part}
 \include{results}
 

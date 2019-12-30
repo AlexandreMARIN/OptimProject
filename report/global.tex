@@ -1,0 +1,83 @@
+%Adrien's part
+\section{Optimisation \textbf{lanceur}}
+%Organisation :\medbreak
+%\subsection{Approche générale}
+%\subsection{Stratégies sur le SQP}
+%\subsubsection{Choix sur BFGS}
+%\subsubsection{Choix sur les projections}
+%\subsection{Partie analytique}
+%\subsubsection{Idée pré-résolution}
+%\subsubsection{Construction}
+%\subsection{\'Ecriture des problèmes}
+%\subsubsection{Problème d'étagement}
+%\subsubsection{Problème de trajectoire}
+%\subsection{Résolution des problèmes via SQP}
+%\indent a) Résolution du problème d'étagement\\
+%\indent b) Résolution du problème de trajectoire\\
+%\subsection{Problème final}
+%\bigbreak
+
+
+\subsection{Approche générale}\medbreak
+
+Nous procédons par étapes afin de réaliser le lanceur. La première est la réalisation de l'algorithme SQP. Afin de faciliter son fonctionnement, il faut avoir une idée de la solution vers laquelle il doit converger. On utilise donc la partie analytique à l'aide de l'algorithme de Newton pour approcher les masses d'ergols solutions de notre problème. C'est le programme "analytical\_approachcc".\\
+On définit la fonction problème d'étagement (resp. problème de trajectoire) dans "stageproblem" (resp. "pathproblem"). Afin de trouver la solution du problème d'étagement, on définit le script "solve\_stageproblem" qui applique SQP au probème d'étagement. Pour la solution du problème de trajectoire, on utilise "solve\_pathproblem" qui fait plusieurs applications astucieuses de SQP sur les 4 angles.\\
+Enfin, pour les itérations sur la vitesse propulsive, on définit un programme "set\_config" dans lequel on fera plusieurs applications inspirées de "solve\_pathproblem" et "solve\_stageproblem" à l'aide des fonctions "path\_solver" et "stage\_solver".\bigbreak
+
+\subsection{Stratégies sur le SQP}\medbreak
+
+\subsubsection{Choix sur BFGS}\medbreak
+
+On choisit simplement la méthode BFGS car elle redonne une matrice définie positive comme approximation de H.\medbreak
+
+\subsubsection{Choix sur les projections}\medbreak
+
+Dans notre algorithme, nous ne projetons qu'une fois par boucle : avant de faire la globalisation. L'idée est, en plus de borner les valeurs de l'argument, de réorienter la direction de recherche $d_{QP}$ après projection. En effet, la direction de recherche définit un vecteur entre "new\_x" et "x". Par conséquent, tout changement de "new\_x" rend $d_{QP}$ obsolète puisque cette direction "pointera" vers un point qui n'existe plus (car modifié par la projection). On rajoute donc deux projections (sur les bornes inférieures et supérieures) qui concernent $d_{QP}$. L'objectif est de réorienter  $d_{QP}$ vers le  "new\_x" projeté. On s'assure ainsi que l'algorithme d'Armijo modifie une direction de recherche qui a un sens.Pour faire ces projections, on se sert de la comparaison entre vecteurs, qui renvoie les indices validant la comparaison. Lorsque la solution "new\_x" ne dépasse pas les bornes, aucun indice n'est renvoyé, c'est donc une projection "vide".\medbreak
+
+\subsection{Partie analytique}\medbreak
+
+\subsubsection{Idée pré-résolution}\medbreak
+L'idée de pré-résoudre le problème a été évoquée plusieurs fois. La partie analytique que l'on trouve dans le programme "analytical\_approach" a cette vocation. On utilise l'exercice du sujet pour résoudre le problème équivalent au problème d'étagement (1 équation à 1 inconnue) à l'aide de l'algotithme de Newton. Une fois $x_3$ trouvé, on en déduit $x_1$ et $x_2$ et on remonte aux 3 masses d'ergols.\\
+La variable KKT sert à vérifier que les conditions KKT d'ordre 1 sont respectée. KKT = 0 ici, c'est donc bien le cas.\medbreak
+\subsubsection{Construction}\medbreak
+Comme le reste de nos algorithmes, ce script travaille sur des variables globales initialisées par la fonction de type void "data()". Ce choix de travailler sur les variables globales permet de traîter les problèmes de trajectoire et d'étagement sans modifier leurs arguments : on n'a pas à copier un grand nombre de valeurs pour chaque fonction.
+
+
+\subsection{\'Ecriture des problèmes}\medbreak
+\subsubsection{Problème d'étagement}\medbreak
+Le problème d'étagement est encodé dans "stageproblem". La fonction prend en argument un vecteur "m" des masses d'ergol et retourne deux réels : Mi et y. Mi est la masse initiale de la fusée, construite à partir des masses d'ergol. Il s'agit de la quantité à minimiser dans le problème d'optimisation. y est la valeur de la fonction contrainte du problème d'étagement prise en "m" .\medbreak
+\subsubsection{Problème de trajectoire}\medbreak
+
+Afin de coder le problème de trajectoire, on doit résoudre une EDO. La fonction "pathproblem" prend en argument un vecteur "theta" de quatre composantes et renvoie "-" la norme de la vitesse (réécriture du probleme avec l'idée max = "-" min) et la valeur la contrainte normalisée selon les $\theta_0, \theta_1, \theta_2, \theta_3$ dans "theta". \\
+La principale difficultée est de résoudre l'EDO. Pour cela, on construit la fonction "rocketpath" qui se servira elle-même de "odefunc".\\
+"rocketpath" renvoie 6 vecteurs : tous les $R_x$ et $R_y$ stockés dans R, tous les $V_x$ et $V_y$ stockés dans V, toutes les masses stockées dans M et l'ensemble dees temps d'intégration "tspanout" (à chaque temps correspond une donnée ($R_x,R_y,V_x,V_y$,M). Les arguments donnés sont les 4 thetas. On commence par initialiser "R", "V", "tspan" qui servira de bornes d'intégration pour ODE45 et "tspanout" qu'on remplira avec les temps ressortis par ODE45. On boucle sur les 3 changements d'angle avec ODE45 qui prend en appel la fonction "odefunc". Durant celle boucle, on concatène les resutats dans "res" et "tspanout". Enfin, on extrait les résultats dans 2 doubles vecteurs "R" et "V" et un vecteur "M".\\
+
+La fonction "odefunc" résout l'EDO en intégrant sur un intervalle de temps donné. Elle prend en argument les données de l'étage en cours de consommation. On définit dedans les constantes physiques puis on remplit le vecteur dydt en fonction du vecteur y construit précédemment.\medbreak
+
+\subsection{Résolution des problèmes via SQP}\medbreak
+On dispose donc de deux fonctions problèmes d'étagement et de trajectoire. Il s'agit maintenant de résoudre ces deux problèmes.\\
+On va construire deux scripts pour résoudre ces problèmes séparemment et deux fonctions reprennant les principes respectifs des scripts.\medbreak
+
+
+\subsubsection{Résolution du problème d'étagement}\medbreak
+
+On commence par créer le script "solve\_stageproblem" : \\
+\indent - On reprend la solution analytique trouvée dans "analytical\_approach" qu'on pose comme "m0" et on pose les bornes à plus et moins 1500, 1000, 500. On va utiliser SQP donc on place les déplacements minimum ainsi que les maxima d'itérations et d'appels sur f et c. On applique SQP pour trouver les masses d'ergol qui minimisent la masse finale de la fusée. Ce vecteur de 3 masses d'ergol "m\_e" est stocké dans un fichier "m\_e.mat"\medbreak
+
+Nous créeons ensuite "stage\_solver" qui est une fonction de type "void" là encore. On initialise les bornes proches de la solution analytique. L'idée est ensuite, pour un nombre d'essais donné, de générer aléatoirement un vecteur de masse d'ergol dans cet intervalle. Après application de SQP, on teste si $\|    \nabla $L$   \|$ est plus petit qu'une tolérance proche de 0. C'est une façon d'exiger une bonne vérification des conditions KKT d'ordre 1. Dans le cas où aucun vecteur ne vérifie cette condition, on s'assure que l'algorithme retourne quand même le vecteur le plus proche de vérifier cette condition grâce à un second test dans la boucle. Celui-ci remplace l'ancien vecteur des masses d'ergols par celui généré dans la boucle si $\|    \nabla $L$_{nouveau}   \| < \|    \nabla $L$_{ancien}   \|$.\medbreak
+
+
+\subsubsection{Résolution du problème de trajectoire}\medbreak
+
+On commence par créer le script "solve\_pathproblem" : \\
+\indent - On respecte les conseils donnés dans le PDF. On commence par charger "m\_e.mat". Les masses initiales "Mi" à chaque étage ainsi que les temps de combustion "t\_c" se déduisent des masses d'ergol et des données du problème présentes dans "data()".\\
+On commence par trouver 4 thetas à la main qui donnent une trajectoire assez correcte. On applique "rocketpath" sur ce vecteur "theta" := ($\theta_0,\theta_1,\theta_2,\theta_3$) pour obtenir vitesse et position au fil du temps. Le but est ensuite d'optimiser $\theta_2$, $\theta_3$ puis $\theta_1$, $\theta_2$, $\theta_3$ via SQP appliqué sur des fonctions anonymes. On applique enfin un dernier SQP sur tous les thetas pour améliorer encore la solution. On affiche dans des graphiques les trajectoires et vitesses avec l'altitude visée et la Terre pour observer l'amélioration. Afin de vérifier la cohérence des résultats, on affiche également dans 3 graphiques différents la vitesse, la masse et la distance par rapport à la Terre en fonction du temps.\medbreak
+
+Nous créeons ensuite "path\_solver". Elle renvoie les thetas, la trajectoire Comme toujours, on initialise les critères de contôle de la solution et les critères d'arrêt du SQP. Le but est d'obtenir un bon candidat pour "theta" avant d'optimiser $\theta_2$, $\theta_3$ puis $\theta_1$, $\theta_2$, $\theta_3$ via SQP appliqué sur des fonctions anonymes. On reprend l'idée servant à trouver un bon candidat pour les masses d'ergol en générant des thetas aléatoires dans l'intervalle et on arrête si un vecteur est proche de vérifier les conditions KKT d'ordre 1. Si un tel vecteur n'existe pas, on prend le meilleur des vecteurs générés au cours de la boucle.\medbreak
+
+\subsection{Problème final}\medbreak
+
+Le problème final est résolu dans le script "set\_config". On utilisera "path\_solver" et "stage\_solver".\\
+On appelle "data()" pour initialiser les valeurs. On poursuit cette initialisation en appelant "stage\_solver()" afin de paramétrer les masses d'ergol et les $(M\_i)_j$ et $(t\_c)_j$ qui en découlent. On pose la tolérance à 10 m/s et le nombre d'itérations maximum à 5.\\
+Dans une boucle "while", on actualise la vitesse V\_p on exécute successivement "stage\_solver" et "path\_solver". L'exécution de "stage\_solver" est suivie d'une mise à jour des masses M\_i et des temps de combustion qui seront utilisés par "path\_solver".\\
+Cette boucle s'arrête une fois que la vitesse réelle est à moins de 10m/s de la vitesse visée ou qu'on dépasse le nombre d'itérations maximum.
