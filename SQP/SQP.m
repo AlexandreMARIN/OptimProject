@@ -26,8 +26,9 @@ function [x, lambda, k, normGradLag, fx, cx, rho, nbcall] = SQP(x0, problem, eps
 %normGradLag : Euclidian norm of the gradient of the Lagrangian function
 % at x
 %fx, cx : the value of the objective and of the constraints at x
-%rho : see Armijo()
+%rho : penalty used in Armijo()
 %nbcall : number of calls for f and c
+
 
 %Will we display information ?
 if nargin < 10
@@ -47,35 +48,78 @@ nbcall = 1;%number of calls for f, c
 
 %we compute A, Q, g, b to build the linear system
 H = eye(n);%an estimate of the Hessian matrix Q of the Lagrangian function
-if iscell(problem)%we see what kind of data is 'problem'
+%we see what kind of data is 'problem'
+%'problem' will be an array cell of the form:
+%{handle to the objective-constraints function ; indices of the constraints}
+if iscell(problem)
     [fx, cx] = problem{1}(x);
     cx = cx(problem{2});%we take only the constraints given by problem{2}
 else
     [fx, cx] = problem(x);
     problem = {problem ; 1:size(cx, 1)};%we take all the constraints
 end
+%we compute the gradient 'g' of the objective
+%and the Jacobian matrix 'A' of the constraints
 [g, A] = gradient(x, fx, cx, h, problem);
 b = -cx;
-nbcall = nbcall + n;
+nbcall = nbcall + n;%the increase is due to the computation of gradients
 
-%we solve the quadratic problem
-[d_QP, lambda] = KKT_quad_lin(H, g, A, b, getMsgWarn(2));
-new_x = x + d_QP;
+%iteration 0 : we compute the multipliers of Lagrange
+%with the least squares method
+if isempty(cx)
+    lambda = [];
+    normGradLag = norm(g);%no constraint !
+else
+    [lambda, ~] = linsolve(A*A', -A*g);
+    gxlag = g + A'*lambda;%gradient of the Lagrangian function with respect to x
+    %norm of the gradient of the Lagrangian function with respect to (x, lambda)
+    normGradLag = norm([gxlag ; cx]);
+end
 
-%we make some projections
-ind_inf = new_x < x_inf;
-new_x(ind_inf) = x_inf(ind_inf);
-d_QP(ind_inf) = x_inf(ind_inf) - x(ind_inf);
-ind_sup = new_x > x_sup;
-new_x(ind_sup) = x_sup(ind_sup);
-d_QP(ind_sup) = x_sup(ind_sup) - x(ind_sup);
+if getMsgWarn(1)
+    %we display some information
+    fprintf("iteration: %d\n"...
+        +"number of calls: %d\n"...
+        +"norm of the gradient of the Lagrangian function: %f\n"...
+        +"x: ( %s )\n"...
+        +"objective at x: %f\n"...
+        +"constraints at x: ( %s )\n"...
+        +"lambda: ( %s )\n\n"...
+        , k...
+        , nbcall...
+        , normGradLag...
+        , join(string(x), ", ")...
+        , fx...
+        , join(string(cx), ", ")...
+        , join(string(lambda), ", "));
+end
 
-%globalisation
-fprev = fx;%value of f at prev_x
-[x, fx, cx, nbcall, dx, rho] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, nbit_Armijo, nbcall, maxnbcall, getMsgWarn(2));
+%the main stop criteria:
+if normGradLag < epsilon
+    rho = NaN;
+    return
+end
 
 
-while (k < maxnbiter)
+k = 1;%the first iteration
+
+while (k <= maxnbiter)
+
+    %we solve the quadratic problem
+    [d_QP, lambda] = KKT_quad_lin(H, g, A, b, getMsgWarn(2));
+    new_x = x + d_QP;
+
+    %globalisation
+    fprev = fx;%value of f at prev_x
+    [x, fx, cx, nbcall, dx, rho] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, x_inf, x_sup, nbit_Armijo, nbcall, maxnbcall, getMsgWarn(2));
+
+    %Is the maximum number of calls for 'problem' reached ?
+    if nbcall > maxnbcall
+        if getMsgWarn(1)
+            fprintf("The maximum number of calls for the objective has been reached : \n\tSQP stops\n")
+        end
+        return
+    end
 
     %compute A, Q, g, b
     h = 1e-4 * x;
@@ -90,7 +134,7 @@ while (k < maxnbiter)
     end
     nbcall = nbcall + n;
     
-    %main stop criterion
+    %for the main stop criterion
     normGradLag = norm([gxlag ; cx]);
     
     if getMsgWarn(1)
@@ -117,15 +161,7 @@ while (k < maxnbiter)
         return
     end
     
-    %another three stop criteria
-    
-    %Is the maximum number of calls for 'problem' reached ?
-    if nbcall > maxnbcall
-        if getMsgWarn(1)
-            fprintf("The maximum number of calls for the objective has been reached : \n\tSQP stops\n")
-        end
-        return
-    end
+    %another two stop criteria
     
     %Is the update of x negligible ?
     ndx = norm(dx);
@@ -146,25 +182,10 @@ while (k < maxnbiter)
     end
     
     k = k + 1;
-    
+
+    %we prepare the next iteration
     b = -cx;
     H = compute_H(H, dx, gxlag, prev_g, prev_A, lambda);
-
-    %we solve the quadratic problem
-    [d_QP, lambda] = KKT_quad_lin(H, g, A, b, getMsgWarn(2));
-    new_x = x + d_QP;
-
-    %we make some projections
-    ind_inf = new_x < x_inf;
-    new_x(ind_inf) = x_inf(ind_inf);
-    d_QP(ind_inf) = x_inf(ind_inf) - x(ind_inf);
-    ind_sup = new_x > x_sup;
-    new_x(ind_sup) = x_sup(ind_sup);
-    d_QP(ind_sup) = x_sup(ind_sup) - x(ind_sup);
-    
-    %globalisation
-    fprev = fx;
-    [x, fx, cx, nbcall, dx, rho] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, nbit_Armijo, nbcall, maxnbcall, getMsgWarn(2));
 
 end
 
