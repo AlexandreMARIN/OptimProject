@@ -6,17 +6,21 @@ Les grandeurs physiques ont pour unités celles du système international.
 
 Les itérations sur la vitesse propulsive sont effectuées dans le script \lstinline+set_config.m+~: les problèmes d'étagement et de trajectoire sont résolus respectivement grâce aux fichiers \lstinline+stage_solver.m+ et \lstinline+path_solver.m+.
 
-Voici les résultats issus de l'exécution du script principal~:
+Voici les résultats issus de l'exécution de \lstinline+set_config.m+~:
 
 \[\begin{array}{|c|c|c|c|c|c|}\hline
-\text{itérations} & \masspropel{} & \propellingvlct & \realvlct & \mathrm{M}_0 & \theta\\ \hline
-2 & \begin{pmatrix}26\,841\\ 12\,496\\ 5\,491\end{pmatrix} & 9\,324 & 7\ 780,87 & 51\,984 & %
+\text{itération} & \masspropel{} & \propellingvlct & \realvlct & \mathrm{M}_0 & \theta\\ \hline
+1 & \begin{pmatrix}27\,144\\ 12\,564\\ 5\,501\end{pmatrix} & 9\,341 & 7\ 801 & 52\,408 & %
+\begin{pmatrix}0,053\\ -0,137\,68\\ 0,326\,8\\ 0,138\,06\end{pmatrix}\\\hline
+2 & \begin{pmatrix}26\,841\\ 12\,496\\ 5\,491\end{pmatrix} & 9\,324 & 7\ 781 & 51\,984 & %
 \begin{pmatrix}0,053\\ -0,137\,27\\ 0,327\,56\\ 0,139\,06\end{pmatrix}\\\hline
 \end{array}\]
 
 La vitesse cible $\targetvlct$ vaut dans notre cas $7\,784,26$.
 
 \subsection{Graphes : trajectoire, altitude, vitesse et masse}
+
+Les graphes présentés ici correspondent à la configuration optimale du lanceur.
 
 Voici les durées de combustion et instants $t_j$ de fin de combustion pour chaque étage~:
 

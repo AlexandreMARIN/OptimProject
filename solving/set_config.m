@@ -26,9 +26,10 @@ end
 V_r = norm(V(end,:));
 deltaV = V_c - V_r;
 
-fprintf("iter : 0\ndeltaV : %f\nm_e : %s\ntheta : %s\n\n",...
-        deltaV, join(string(m_e)), join(string(theta)))
+fprintf("iteration : %d\ndeltaV : %f\nm_e : %s\nV_p : %f\nfinal velocity : %f\ntotal mass of the rocket : %f\ntheta : %s\n\n",...
+    iter, deltaV, join(string(m_e)), V_p, V_r, M_i(1), join(string(theta)))
 
+iter = iter + 1;
 
 while (iter <= maxnbiter) && (abs(deltaV) > tol)
     V_p = V_p + deltaV;
@@ -40,12 +41,13 @@ while (iter <= maxnbiter) && (abs(deltaV) > tol)
     [theta, R, V, M, tspanout] = path_solver();
     V_r = norm(V(end,:));
     deltaV = V_c - V_r;
-    fprintf("iter : %d\ndeltaV : %f\nm_e : %s\ntheta : %s\n\n",...
-            iter, deltaV, join(string(m_e)), join(string(theta)))
+    fprintf("iteration : %d\ndeltaV : %f\nm_e : %s\nV_p : %f\nfinal velocity : %f\ntotal mass of the rocket : %f\ntheta : %s\n\n",...
+            iter, deltaV, join(string(m_e)), V_p, V_r, M_i(1), join(string(theta)))
 
     iter = iter + 1;
 end
 
+nbiter = iter - 1;%number of iterations to get the results
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %we present some results
@@ -124,4 +126,5 @@ yticklabels(["M_{f3}", "M_{i3}", "M_{f2}", "M_{i2}", "M_{f1}", "M_{i1}"])
 ylim([M_f(3), M_i(1)])
 
 %we display some information
-fprintf("\nResults acquired in %d iterations:\n\nm_e : %s\nV_p : %f\nfinal velocity : %f\ntotal mass of the rocket : %f\ntheta : %s\n", iter, join(string(m_e)), V_p, Vmag(end), M_i(1), join(string(theta)))
+fprintf("\nResults acquired in %d iterations:\n\nm_e : %s\nV_p : %f\nfinal velocity : %f\ntotal mass of the rocket : %f\ntheta : %s\n",...
+    nbiter, join(string(m_e)), V_p, Vmag(end), M_i(1), join(string(theta)))
