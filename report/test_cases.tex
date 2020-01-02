@@ -19,19 +19,38 @@ x_{1}x_{5} - 2)^{T}$;\bigbreak
 \indent avec pour objectifs : $x^{*} = (-1.2366 ; 2.4616 ; 1.1911 ; -0.2144 ; -1.6165)^{T}$ et $f(x^{*}) = 28.4974$\\
 \end{itemize}
 Les résultats sont stockés dans le tableau suivant : \smallbreak
-{\renewcommand{\arraystretch}{1.5}
-\begin{tabular}{|c|c|c|c|c|c|c|}
+{\renewcommand{\arraystretch}{1.5}\setlength{\tabcolsep}{3pt}
+\begin{table}[h]\centering \small\begin{tabular}{|c|c|c|c|c|c|c|}
 	\hline
- 	iter & x & f & $\| $c(x)$ \|$ & $\|    \nabla $L$  \|$ & rho & appels de f et c\\
+ 	iter & x & f(x) & $\| $c(x)$ \|$ & $\|    \nabla $L$  \|$ & rho & appels de f et c\\
 	\hline
- 	8 & $(-1.2370, 2.4620, 1.1908, -0.2156, -1.6168)^{T}$ & 28.5087 & 3.8888e-13 & 1.6782e-08 & 9.8970 & 61\\
+ 	0 & $( -1, 2, 1, -2, -2 )^{T}$ & 95.0 & 2.8935 & 62.7595 & / & 6\\
 	\hline
-\end{tabular}
-}
+ 	1 & $(-0.937, 2.16, 1.49, 0.0856, -1.9165)^{T}$ & 33.62 & 0.877 & 194.896 & 52.196759 & 12\\
+	\hline
+ 	2 & $( -1.54, 2.2954, 1.49, 0.09, -1.32 )^{T}$ & 29.4057 & 0.73 & 42.71 & 12.824709 & 20\\
+	\hline
+ 	3 & $( -0.9, 2.49, 1.07, -0.51, -1.85 )^{T}$ & 27.871 & 0.32 & 6.514 & 10.790444 & 26\\
+	\hline
+ 	4 & $( -1.21, 2.45, 1.21, -0.17, -1.592 )^{T}$ & 27.94 & 0.078 & 2.52 & 10.112978 & 32\\
+	\hline
+ 	5 & $( -1.2595, 2.4669, 1.19, -0.22, -1.588 )^{T}$ & 28.53 & 98e-5 & 1.454 & 10.005331 & 38\\
+	\hline
+ 	6 & $( -1.2393, 2.4623, 1.19, -0.22, -1.61)^{T}$ & 28.504 & 518e-6 & 0.237 & 9.942327 & 44\\
+	\hline
+ 	7 & $( -1.237, 2.46, 1.19, -0.216, -1.6169 )^{T}$ & 28.50865 & 8.178e-06 & 9.963e-3 & 9.897096 & 50\\
+	\hline
+ 	8 & $( -1.237, 2.46, 1.19, -0.21565, -1.6168 )^{T}$ & 28.508725 & 2.61e-09 & 48e-6 & 9.896991 & 56\\
+	\hline
+ 	9 & $( -1.237, 2.462, 1.19, -0.21565, -1.6168 )^{T}$ & 28.5087 & 2.077e-12 & 3.1395e-07 & 9.896981 & 62\\
+
+	\hline
+\end{tabular}\end{table}
+}\normalsize
 \bigbreak
 \textit{Note : les résultats obtenus sont bien conformes aux résultats attendus. On remarquera que sans les bornes, SQP converge vers d'autres minima locaux. Il est donc important de choisir ces bornes proches de la solution attendue. On choisit donc un intervalle de 0.6
 autour de celle-ci.}
-\medbreak
+\newpage
 
 
 
@@ -56,18 +75,39 @@ $4344.3ln(\frac{1700+1.2154x_3}{1700+0.2154x_3})
 
 \bigbreak
 
-\item On prend comme point de départ de l'algorithme SQP : $x^0 = ( 275000,30000,5500)^{T}$ qui est la moyenne des bornes\\
+\item On prend comme point de départ de l'algorithme SQP : $x^0 = (115000, 35000, 6000)^{T}$ qui est la moyenne des bornes\\
 \indent avec pour objectifs : $x^{*} = (145349 ; 31215 ; 7933)^{T}$ et $f(x^{*}) = 208691$\\
 \end{itemize}
 Les résultats sont stockés dans le tableau suivant : \smallbreak
 {\renewcommand{\arraystretch}{1.5}
-\begin{tabular}{|c|c|c|c|c|c|c|}
+\begin{table}[h]\centering \small\begin{tabular}{|c|c|c|c|c|c|c|}
 	\hline
- 	iter & x & f & $\| $c(x)$ \|$ & $\|    \nabla $L$  \|$ & rho & appels de f et c\\
+ 	iter & x & f(x) & $\| $c(x)$ \|$ & $\|    \nabla $L$  \|$ & rho & appels de f et c\\
 	\hline
- 	18 & $(1.4539e5, 0.3125e5, 0.0793e5)^{T}$ & 208778 & -0.000682 & 0.0038 & 118.1651 & 82\\
+	0 & $(115000, 35000, 6000)^{T}$ & 177015.90 & 361.36 & 361.36 & / & 4\\
+	\hline
+	1 & $(115970.49, 35416.328, 10000)^{T}$ & 183434.95 & 273.45 & 1564.81 & 81642.55 & 8\\
+	\hline
+	2 & $(127626.0, 44731.2, 5870.50)^{T}$ & 202096.70 & 199.55 & 87809.94 & 1001129.48 & 12\\
+	\hline
+	3 & $(137284.567, 50000, 6870.88 )^{T}$ & 220110.46 & 21.18 & 7113.2 & 119425.29 & 16\\
+	\hline
+	4 & $(138609.19, 50000, 6991.44 )^{T}$ & 221727.45 & 1.35& 185.21 & 3332.76 & 20\\
+	\hline
+	5 & $(138700.45, 49991.19216, 6999.994 )^{T}$ & 221829.01 & 13e-4 & 3.84 & 90.44 & 24\\
+	\hline
+	6 & $(138700.47, 49971.01733, 7000.62 )^{T}$ & 221806.52 & 6.4e-05 & 3.13 & 76.58 & 28\\
+	\hline
+	7 & $(138539.77, 20000, 8529.26 )^{T}$ & 188923.47 & 235.69 &235.71 & 128.95 & 32\\
+	\hline
+	8 & $(137507.1, 30996.5, 7875.68)^{T}$ & 199663.91 &  79.98 & 79.98 & 100.46 & 36\\
+	\hline
+	9 & $(143378.6, 32532.79, 8406.05 )^{T}$ & 208598.11 & 3.37 & 3.44 & 126.30 & 40\\
+	\hline
+	10 & $(143403.19, 32874.4, 8379.81 )^{T}$ & 208987.45 & 0.045 & 0.61 & 122.72 & 44\\
 	\hline
 \end{tabular}
-}
+\end{table}}
 \bigbreak
-\textit{Note : les résultats obtenus sont bien conformes au résultats attendus. On remarquera que sans les bornes, SQP converge vers d'autres minima locaux. Il est donc important de choisir ces bornes proches de la solution attendue. On choisit donc de poser la borne supérieure comme étant $(500000 , 50000 , 10000)^{T}$ et la borne inférieure comme $(50000 , 10000 , 1000)^{T}$. Cela nous évite de plus de converger vers des solutions non physiques.}
+\textit{Note : les résultats obtenus sont bien conformes au résultats attendus. On remarquera que sans les bornes, SQP converge vers d'autres minima locaux. Il est donc important de choisir ces bornes proches de la solution attendue. On choisit donc de poser la borne supérieure comme étant $(170000 , 50000 , 10000)^{T}$ et la borne inférieure comme $(60000 , 20000 , 2000)^{T}$. Cela nous évite de plus de converger vers des solutions non physiques.}
+
