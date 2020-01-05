@@ -114,7 +114,7 @@ while (k <= maxnbiter)
     [x, fx, cx, nbcall, dx, rho] = Armijo(d_QP, new_x, x, fx, g, cx, c1, problem, norm(lambda, Inf)+1, x_inf, x_sup, nbit_Armijo, nbcall, maxnbcall, getMsgWarn(2));
 
     %Is the maximum number of calls for 'problem' reached ?
-    if nbcall > maxnbcall
+    if nbcall >= maxnbcall
         if getMsgWarn(1)
             fprintf("The maximum number of calls for the objective has been reached : \n\tSQP stops\n")
         end
@@ -165,7 +165,7 @@ while (k <= maxnbiter)
     
     %Is the update of x negligible ?
     ndx = norm(dx);
-    if (ndx >= 0) && (ndx < mindx)
+    if (ndx < mindx)
         if getMsgWarn(1)
             fprintf("The minimum move for the minimiser has been reached :\n\tSQP stops\n")
         end

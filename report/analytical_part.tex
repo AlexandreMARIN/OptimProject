@@ -11,7 +11,7 @@ On reprend les notations de l'énoncé, indications comprises.
 Notons $\varphi$ l'application qui envoie $(\masspropel{1},\masspropel{2},\masspropel{3})$ sur $x$ par la formule
 \[x_{j} = 1 + \dfrac{\masspropel{j}}{\payload + \sum_{j<l\leqslant 3}(1+\constructidx{l})\masspropel{l} \,+ \constructidx{j}\masspropel{j}}\text{.}\]
 Alors $\varphi$ est bijective car pour tout $j\in\{1,2,3\}$
-\[\masspropel{j}=\dfrac{\payload + \sum_{j<l\leqslant 3}(1+\constructidx{l})\masspropel{l}}{1+\constructidx{j}(1-x_{j})}\]
+\[\masspropel{j}=\dfrac{(x_{j}-1)}{1-\constructidx{j}(x_{j}-1)}\left[\payload + \sum_{j<l\leqslant 3}(1+\constructidx{l})\masspropel{l}\right]\]
 et donc $J=-f\circ \varphi$. La reformulation de la contrainte étant immédiate, les deux problèmes considérés sont équivalents.
 
 \question Si $x$ est un minimiseur local de $f$ sous la contrainte $c$, comme ces deux fonctions sont de classe $\mathscr{C}^1$ et que la contrainte en $x$ est forcément qualifiée, alors d'après le théorème des extrema liés il existe $\lambda\in\mathbb{R}$ tel que, pour tout $j\in\{1,2,3\}$
@@ -30,7 +30,9 @@ on obtient
 \[x_{j} = \dfrac{1}{\Omega_{j}}\left[1-\dfrac{\propellantsvlct{3}}{\propellantsvlct{j}}(1-\Omega_{3}x_{3})\right]\]
 et on voit que le problème revient à résoudre $c(x)=0$ où $x_1$ et $x_2$ s'expriment en fonction de $x_3$.
 
-\question On considère une vitesse propulsive $\propellingvlct = 1.2\,\targetvlct$. Dans le fichier \\\verb+analytical_approach.m+ du dossier \verb+solving+, nous résolvons cette équation en $x_3$ avec la méthode de Newton. On obtient
+\question On considère une vitesse propulsive $\propellingvlct = 1,2\cdot\targetvlct$.
+
+Dans le fichier \verb+analytical_approach.m+ du dossier \verb+solving+, nous résolvons cette équation en $x_3$ avec la méthode de Newton. On obtient
 
 \begin{center}
 \[\begin{array}{|c|c|c|c|c|c|}\hline
@@ -42,6 +44,6 @@ x_3 & \masspropel{1} & \masspropel{2} & \masspropel{3} & \mathrm{M}_{0} & \lambd
 La troisième équation donnée par le théorème de K.K.T. nous conduit au nombre $-3,47\cdot 10^{-18}$.
 
 \question Dans le fichier \lstinline+solve_stageproblem.m+ nous résolvons le problème (PE) en minimisant $\mathrm{M}_0$ et en prenant comme point de départ $m_{0}=(27\,000,\,13\,000,\,6\,000)$. Nous obtenons en $18$ itérations
-\[\masspropel{} = (26\,983,\,12\,703,\,5\,516)\]
+\[\masspropel{} = (26\,983,\,12\,703,\,5\,516)\text{ .}\]
 
 On retrouve bien le minimiseur déterminé avec l'approche analytique.
