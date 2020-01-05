@@ -29,7 +29,7 @@ Ainsi,\\
 \begin{itemize}
 \item On calcule une approximation H du Hessien au lieu de calculer Q : \\
 - Nous choisissons d'utiliser la formule BFGS pour calculer cette approximation H car elle présente l'avantage de fournir 
-une matrice définie positive qui ne nécéssite pas de modification.\\
+une matrice définie positive qui ne nécessite pas de modification.\\
 \item On utilise la méthode de globalisation pour s'assurer que le déplacement calculé est une amélioration :\\
 \indent- Pour s'assurer que $\|    \nabla $L$(x_{k+1},\lambda_{k+1})   \| < \|    \nabla $L$(x_{k},\lambda_{k})   \|$,
 on effectue un test sur la fonction "mérite" F(x) car $\nabla $L est coûteux à calculer. \\
@@ -40,9 +40,9 @@ on effectue un test sur la fonction "mérite" F(x) car $\nabla $L est coûteux �
 Cependant, l'algorithme SQP présente les mêmes défauts que l'algorithme de Newton et ne converge donc pas vers une direction unique. Pour éviter d'atteindre des solutions non-physiques, on fait des projections sur des bornes relativement proches de la solution réelle. Il faut donc avoir en avance une idée de cette solution.\bigbreak
 \indent Le rajout de conditions d'arrêt permet de limiter le temps de calcul. L'algorithme SQP est arrêté si :\medbreak
 - Le déplacement de la solution est négligeable.\\
-\indent- La différence entre $\|    \nabla$L$(x_{k+1},\lambda_{k+1})   \| $ et $\|    \nabla $L$(x_{k},\lambda_{k})   \|$ est estimée suffisamment petite.\\
+\indent- La différence entre $f(x_k) $ et $f(x_{k+1})$ est estimée suffisamment petite.\\
 \indent- On a appelé suffisamment de fois les fonctions f et c.\\
-\indent- Les conditions d'arrêt de base de l'algorithme de Newton ( $\| \nabla $L$ \| < \epsilon$ et $n_{iter} < K$, $K$ posé à l'avance).\\
+\indent- Les conditions d'arrêt de base de l'algorithme de Newton ( $\| \nabla $L$ \| < \epsilon$ et $n_{iter} < K$, $K$ posé à l'avance) sont remplies.\\
 \newpage
 Les arguments d'entrée sont :\medbreak
 \indent- Le point de départ \texttt{"x0"},\\
@@ -52,29 +52,24 @@ Les arguments d'entrée sont :\medbreak
 \indent- Le nombre d'itérations maximum sur la boucle \texttt{while} \texttt{"maxnbiter"},\\
 \indent- La limite d'appels sur f et c \texttt{"maxnbcall"},\\
 \indent- Le déplacement minimum en x (resp. en f(x)) \texttt{"mindx"} (resp. \texttt{"mindf"}),\\
-\indent- \texttt{"getMsgWarn"} qui augmente ou diminue l'affichage des warnings durant l'execution.\medbreak
+\indent- \texttt{"getMsgWarn"} qui augmente ou diminue l'affichage des warnings durant l'exécution.\medbreak
 
 Afin d'établir les tableaux, l'algorithme SQP renvoie :\medbreak
 \indent- La solution \texttt{"x"} calculée,\\
 \indent- Le multiplicateur de Lagrange "$\lambda$",\\
 \indent- Le nombre d'itérations de l'algorithme \texttt{"k"},\\
-\indent- $\| \nabla$L$ \|$,
+\indent- $\| \nabla$L$ \|$,\\
 \indent- Les valeurs de f et c atteintes en x, f(x) et c(x),\\
 \indent- La valeur finale de $\rho$ et le nombre d'appels de f et c.
 \bigbreak
 \textit{Note : Comme conseillé dans le PDF, SQP prend en argument \texttt{"problem"} qui est soit un pointeur vers une fonction, soit un domaine de deux cellules contenant le pointeur vers la fonction et les indices des contraintes sélectionnées. Cependant, pour le reste du programme, nous n'utliserons que le premier type d'argument, à savoir une fonction qui renvoie un vecteur "fonction" et "contrainte".}\bigbreak
 
-\underline{Remarque 1} : Quelques exemples d'appels de \texttt{"problem"}.\medbreak
+\underline{Remarque} : Quelques exemples d'appels de \texttt{"problem"}.\medbreak
 
 - Soit f :  $\mathbb{R}^{3} \rightarrow \mathbb{R}$\\
 \indent - Et c : $\mathbb{R}^{3} \rightarrow \mathbb{R}^3$\\
-\indent - On définit "problem" qui prend en argument $x \in \mathbb{R}^{3} $ et qui renvoie un vecteur $[f(x);c_1(x),c_2(x),c_3(x)]$\\
+\indent - On définit "problem" qui prend en argument $x \in \mathbb{R}^{3} $ et qui renvoie deux valeurs : un réel $f(x)$ et un vecteur de contraintes $[c_1(x);c_2(x);c_3(x)]$.\\
 Si on veut appliquer SQP à f et c, on appelle :  \texttt{ SQP(x0, @\textbf{problem}, epsilon,...)}.\\
-Si on ne veut appliquer SQP que selon la \textbf{première contrainte}, on appelle : \texttt{ SQP(x0, @\{\textbf{problem ; [1]}\}, epsilon,...)}.\\
-Si on veut appliquer SQP selon les \textbf{contraintes $c_2$ et $c_3$}, on appelle : \texttt{ SQP(x0, @\{\textbf{problem ; [2,3]}\}, epsilon,...)}.
+Si on ne veut appliquer SQP que selon la \textbf{première contrainte}, on appelle : \texttt{ SQP(x0, \{\textbf{@problem ; [1]}\}, epsilon,...)}.\\
+Si on veut appliquer SQP selon les \textbf{contraintes $c_2$ et $c_3$}, on appelle : \texttt{ SQP(x0, \{\textbf{@problem ; [2,3]}\}, epsilon,...)}.
 \bigbreak
-
-%à voir:
-%\underline{Remarque 2} : choix sur les projections\medbreak
-
-%Dans notre algorithme, nous projetons également la direction de recherche. L'idée est, en plus de borner les valeurs de l'argument, de réorienter cette direction de recherche \texttt{$d_{QP}$} après projection. En effet, \texttt{$d_{QP}$} un vecteur entre \texttt{"new\_x"} et \texttt{"x"}. Par conséquent, tout changement de \texttt{"new\_x"} rend \texttt{$d_{QP}$} obsolète puisque cette direction "pointera" vers un point qui n'existe plus (car modifié par la projection). On rajoute donc deux projections (sur les bornes inférieures et supérieures) qui concernent \texttt{$d_{QP}$}. L'objectif est de réorienter  \texttt{$d_{QP}$} vers le  \texttt{"new\_x"} projeté. On s'assure ainsi que l'algorithme d'Armijo modifie une direction de recherche qui a un sens.Pour faire ces projections, on se sert de la comparaison entre vecteurs, qui renvoie les indices validant la comparaison. Lorsque la solution \texttt{"new\_x}" ne dépasse pas les bornes, aucun indice n'est renvoyé, c'est donc une projection "vide".\medbreak
